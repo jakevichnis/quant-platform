@@ -1,0 +1,35 @@
+syntax = "proto3";		// Picks the protobuf version
+
+package data_ingestion; // namespaces the generated code
+
+// One price update for one instrument.
+message Tick {			// defines a data shape. the numbers are field IDs
+  string symbol = 1;    // used on the wire so never reuse or change them once
+  double bid = 2;       // other services depend on this file.
+  double ask = 3;
+  double last = 4;
+  int64 timestamp_ms = 5;  // Unix epoch, milliseconds
+}
+
+// Which instruments the caller wants. Empty = everything in the config file.
+message SubscribeRequest {
+  repeated string symbols = 1;      // repeated means a list.
+}
+
+// Latest state of every requested instrument, sent once on connect.
+message Snapshot {
+  repeated Tick ticks = 1;
+}
+
+// Each stream message is either the initial snapshot or a single delta.
+message MarketDataUpdate {
+  oneof payload {                   // oneof means exactly one of the two fields is set per message
+    Snapshot snapshot = 1;          // THat's how one stream carries the snapshot first and deltas after
+    Tick tick = 2;                  // which is the pattern from our scaffold.
+  }
+}
+
+service DataIngestion {
+  // First message: full snapshot. Every message after: one incremental tick.
+  rpc Subscribe(SubscribeRequest) returns (stream MarketDataUpdate);
+}                        // stream in returns makes the server keep sending messages over one open call.
