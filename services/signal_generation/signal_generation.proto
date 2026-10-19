@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package signal_generation;
+
+enum Direction {
+  DIRECTION_UNSPECIFIED = 0;
+  LONG = 1;
+  SHORT = 2;
+  FLAT = 3;  // close or exit
+}
+
+// What a strategy wants to do, before risk has approved it.
+message PositionIntent {
+  string symbol = 1;
+  Direction direction = 2;
+  double size_hint = 3;    // relative size, not a share count. Risk decides the real size.
+  double confidence = 4;   // 0.0 to 1.0
+  string strategy_id = 5;  // which strategy produced it
+  int64 timestamp_ms = 6;
+  string pairs_label = 7;	   // names for which stocks are paired relationship
+  string trade_id = 8;     // trade id for the trade
+  double hedge_ratio = 9;   // hedge ratio for the entire trade
+
+}
+
+
+// Which strategies the caller wants intents from.
+message StreamRequest {
+	repeated string strategy_ids = 1;      // An empty list = "all strategies"
+
+}
+
+
+
+service SignalGeneration {  // Caller sends one StreamRequest, then receives a continuous stream of PositionIntents.
+  // Takes 1 StreamRequest and returns a stream of PositionIntent messages. Messages keep arriving as long as connection stays open.
+  rpc StreamIntents(StreamRequest) returns (stream PositionIntent);
+}               // "The strategy wants this trade" and risk has to approve it. This is signaling intent. nothing has been bought.
+
