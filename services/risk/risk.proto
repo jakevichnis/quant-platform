@@ -1,0 +1,47 @@
+syntax = "proto3";
+import "signal_generation.proto";
+package risk;
+
+message RiskDecision {
+	string trade_id = 1;			// Which trade this decision belongs to
+	string symbol = 2;				// Which stock
+	bool risk_approved = 3;			// Whether Risk approved it (yes or no)
+	int64 approved_shares = 4;		// How many shares were approved
+	string explanation = 5;			// Text explanation for rejections or size cuts
+}
+
+
+// One stock the account holds: the symbol, how many shares (a negative number means short)
+// and the average price paid
+message Position {
+	string symbol = 1;				// one stock the account holds
+	int64 total_shares = 2;			// how many shares of that stock (negative number means shorting)
+	double average_price_paid = 3;	// average price of position of stock
+}
+
+
+// the overall financial state of the account, to be taken in consideration for risk appropriation
+message AccountState {
+	double free_capital = 1;		// how much money you have to allocate to positions
+	double nav = 2;					// total account value capital and assets/positions combined
+	double drawdown_pct = 3;		// the current drawdown as percentage (fraction from peak NAV, 0.05 = 5%)
+	repeated Position positions = 4;	// a list of all current holdings
+	double drawdown_usd = 5;			// dollars from peak NAV (current drawdown in dollars)
+}
+
+
+// Risk receives one RiskRequest and answers with decisions
+message RiskRequest {
+	repeated signal_generation.PositionIntent legs = 1;		// both legs of a pair together
+	AccountState account = 2;				// the account state
+	map<string, double> prices = 3;			// the current price per symbol
+}
+
+
+message RiskResponse {
+	repeated RiskDecision decisions = 1;
+}
+
+service Risk {
+	rpc Evaluate(RiskRequest) returns (RiskResponse);	// eventually we add a second RPC as a stop-loss drawndown watch later
+}
