@@ -23,9 +23,10 @@ _sym_db = _symbol_database.Default()
 
 
 import signal_generation_pb2 as signal__generation__pb2
+import common_pb2 as common__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nrisk.proto\x12\x04risk\x1a\x17signal_generation.proto\"u\n\x0cRiskDecision\x12\x10\n\x08trade_id\x18\x01 \x01(\t\x12\x0e\n\x06symbol\x18\x02 \x01(\t\x12\x15\n\rrisk_approved\x18\x03 \x01(\x08\x12\x17\n\x0f\x61pproved_shares\x18\x04 \x01(\x03\x12\x13\n\x0b\x65xplanation\x18\x05 \x01(\t\"L\n\x08Position\x12\x0e\n\x06symbol\x18\x01 \x01(\t\x12\x14\n\x0ctotal_shares\x18\x02 \x01(\x03\x12\x1a\n\x12\x61verage_price_paid\x18\x03 \x01(\x01\"\x80\x01\n\x0c\x41\x63\x63ountState\x12\x14\n\x0c\x66ree_capital\x18\x01 \x01(\x01\x12\x0b\n\x03nav\x18\x02 \x01(\x01\x12\x14\n\x0c\x64rawdown_pct\x18\x03 \x01(\x01\x12!\n\tpositions\x18\x04 \x03(\x0b\x32\x0e.risk.Position\x12\x14\n\x0c\x64rawdown_usd\x18\x05 \x01(\x01\"\xc1\x01\n\x0bRiskRequest\x12/\n\x04legs\x18\x01 \x03(\x0b\x32!.signal_generation.PositionIntent\x12#\n\x07\x61\x63\x63ount\x18\x02 \x01(\x0b\x32\x12.risk.AccountState\x12-\n\x06prices\x18\x03 \x03(\x0b\x32\x1d.risk.RiskRequest.PricesEntry\x1a-\n\x0bPricesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\"5\n\x0cRiskResponse\x12%\n\tdecisions\x18\x01 \x03(\x0b\x32\x12.risk.RiskDecision29\n\x04Risk\x12\x31\n\x08\x45valuate\x12\x11.risk.RiskRequest\x1a\x12.risk.RiskResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nrisk.proto\x12\x04risk\x1a\x17signal_generation.proto\x1a\x0c\x63ommon.proto\"u\n\x0cRiskDecision\x12\x10\n\x08trade_id\x18\x01 \x01(\t\x12\x0e\n\x06symbol\x18\x02 \x01(\t\x12\x15\n\rrisk_approved\x18\x03 \x01(\x08\x12\x17\n\x0f\x61pproved_shares\x18\x04 \x01(\x03\x12\x13\n\x0b\x65xplanation\x18\x05 \x01(\t\"\x82\x01\n\x0c\x41\x63\x63ountState\x12\x14\n\x0c\x66ree_capital\x18\x01 \x01(\x01\x12\x0b\n\x03nav\x18\x02 \x01(\x01\x12\x14\n\x0c\x64rawdown_pct\x18\x03 \x01(\x01\x12#\n\tpositions\x18\x04 \x03(\x0b\x32\x10.common.Position\x12\x14\n\x0c\x64rawdown_usd\x18\x05 \x01(\x01\"\xc1\x01\n\x0bRiskRequest\x12/\n\x04legs\x18\x01 \x03(\x0b\x32!.signal_generation.PositionIntent\x12#\n\x07\x61\x63\x63ount\x18\x02 \x01(\x0b\x32\x12.risk.AccountState\x12-\n\x06prices\x18\x03 \x03(\x0b\x32\x1d.risk.RiskRequest.PricesEntry\x1a-\n\x0bPricesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\"5\n\x0cRiskResponse\x12%\n\tdecisions\x18\x01 \x03(\x0b\x32\x12.risk.RiskDecision29\n\x04Risk\x12\x31\n\x08\x45valuate\x12\x11.risk.RiskRequest\x1a\x12.risk.RiskResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,18 +35,16 @@ if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_RISKREQUEST_PRICESENTRY']._loaded_options = None
   _globals['_RISKREQUEST_PRICESENTRY']._serialized_options = b'8\001'
-  _globals['_RISKDECISION']._serialized_start=45
-  _globals['_RISKDECISION']._serialized_end=162
-  _globals['_POSITION']._serialized_start=164
-  _globals['_POSITION']._serialized_end=240
-  _globals['_ACCOUNTSTATE']._serialized_start=243
-  _globals['_ACCOUNTSTATE']._serialized_end=371
-  _globals['_RISKREQUEST']._serialized_start=374
-  _globals['_RISKREQUEST']._serialized_end=567
-  _globals['_RISKREQUEST_PRICESENTRY']._serialized_start=522
-  _globals['_RISKREQUEST_PRICESENTRY']._serialized_end=567
-  _globals['_RISKRESPONSE']._serialized_start=569
-  _globals['_RISKRESPONSE']._serialized_end=622
-  _globals['_RISK']._serialized_start=624
-  _globals['_RISK']._serialized_end=681
+  _globals['_RISKDECISION']._serialized_start=59
+  _globals['_RISKDECISION']._serialized_end=176
+  _globals['_ACCOUNTSTATE']._serialized_start=179
+  _globals['_ACCOUNTSTATE']._serialized_end=309
+  _globals['_RISKREQUEST']._serialized_start=312
+  _globals['_RISKREQUEST']._serialized_end=505
+  _globals['_RISKREQUEST_PRICESENTRY']._serialized_start=460
+  _globals['_RISKREQUEST_PRICESENTRY']._serialized_end=505
+  _globals['_RISKRESPONSE']._serialized_start=507
+  _globals['_RISKRESPONSE']._serialized_end=560
+  _globals['_RISK']._serialized_start=562
+  _globals['_RISK']._serialized_end=619
 # @@protoc_insertion_point(module_scope)

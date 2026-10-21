@@ -1,0 +1,31 @@
+syntax = "proto3";
+import "common.proto";
+package reconciliation;
+
+
+// this proto file receives our internal positions, 
+// and continuously compares our internal ledger, order state, and position records against
+// actual data from the broker or exchange (such as fill reports, cash balances, and open positions) 
+
+
+message PositionMismatch {
+	string symbol = 1;
+	int64 our_shares = 2;
+	int64 broker_shares = 3;
+	int64 shares_difference = 4;		// broker minus ours. positive = broker holds more than we think
+}
+
+
+message ReconciliationReport {
+	int64 timestamp = 1;
+	bool match_confirmation = 2;
+	repeated PositionMismatch mismatch = 3;
+}
+
+message ReconciliationRequest {
+	repeated common.Position internal_positions = 1;
+}
+
+service Reconciliation {
+	rpc Reconcile(ReconciliationRequest) returns (ReconciliationReport);
+}

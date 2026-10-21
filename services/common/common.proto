@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package common;
+
+
+// One stock the account holds: the symbol, how many shares (a negative number means short)
+// and the average price paid
+message Position {
+	string symbol = 1;				// one stock the account holds
+	int64 total_shares = 2;			// how many shares of that stock (negative number means shorting)
+	double average_price_paid = 3;	// average price of position of stock
+}
+
