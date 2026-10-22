@@ -1,0 +1,12 @@
+instruments:
+    - name: Coca-Cola
+      symbol: KO
+      sec_type: STK
+      exchange: SMART
+      currency: USD
+
+    - name: Pepsi
+      symbol: PEP
+      sec_type: STK
+      exchange: SMART
+      currency: USD
