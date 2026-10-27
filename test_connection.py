@@ -15,3 +15,5 @@ print(ticker)
 print("last:", ticker.last, "| bid:", ticker.bid, "| ask:", ticker.ask, "| close:", ticker.close)
 
 ib.disconnect()
+
+
