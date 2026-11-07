@@ -3,6 +3,7 @@ import sys
 import time
 from concurrent import futures
 sys.path.insert(0, os.path.dirname(__file__))
+from services.common.logging_setup import get_logger
 
 import grpc
 import data_ingestion_pb2 as pb
@@ -10,11 +11,17 @@ import data_ingestion_pb2_grpc as pb_grpc
 
 PORT = 50051
 
+log = get_logger("data_ingestion")
+
 class DataIngestionServicer(pb_grpc.DataIngestionServicer):
     def __init__(self, instruments):
         self.symbols = [i["symbol"] for i in instruments]
+
+
     def Subscribe(self, request, context):
         wanted = list(request.symbols) or self.symbols
+        
+        log.info(f"Subscribed: {wanted}")
 
         # 1. snapshot first: latest state of every instrument
         now = int(time.time() * 1000)
@@ -44,7 +51,8 @@ def serve(instruments, port=PORT):
 if __name__ == "__main__":
     from services.data_ingestion.config import load_instruments
     server = serve(load_instruments("config/instruments.yaml"))
-    print(f"data ingestion server listening on {PORT}")
+    log.info(f"data ingestion server listening on {PORT}")
+    # print(f"data ingestion server listening on {PORT}")
     server.wait_for_termination()
 
 
