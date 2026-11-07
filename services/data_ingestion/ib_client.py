@@ -1,6 +1,9 @@
 from ib_async import IB, Stock
 import asyncio
 import time
+from services.common.logging_setup import get_logger
+
+log = get_logger("data_ingestion")
 
 def make_contract(instrument):
     contract = Stock(instrument['symbol'], instrument['exchange'], instrument['currency'])
@@ -25,7 +28,7 @@ def connect_with_retry(host="127.0.0.1", port=7497, client_id=1,
             delay = base_delay * (2 ** (attempt - 1))
             if attempt == max_attempts:
                 break
-            print(f"attempt {attempt} failed ({e}); retrying in {delay}s")
+            log.warning(f"attempt {attempt} failed ({e}); retrying in {delay}s")
             time.sleep(delay)
     raise ConnectionError(f"could not connect after {max_attempts} attempts")
 
@@ -43,7 +46,7 @@ async def reconnect(ib, host="127.0.0.1", port=7497, client_id=1,
 
         except (ConnectionError, TimeoutError) as e:
             delay = base_delay * (2 ** (attempt - 1))
-            print(f"reconnect attempt {attempt} failed ({e!r})")
+            log.warning(f"reconnect attempt {attempt} failed ({e!r})")
             if attempt == max_attempts:
                 break
             await asyncio.sleep(delay)
@@ -57,11 +60,11 @@ _reconnect_tasks = set()
 
 # ================================
 def make_reconnect_handler(ib, **kwargs):
-    # Closure: the disconnect even passes no arguments, so the handler
+    # Closure: the disconnect event passes no arguments, so the handler
     # has to already know which ib to reconnect and with what settings
 
     def handler():
-        print("handler fired")
+        log.warning("handler fired")
         task = asyncio.create_task(reconnect(ib, **kwargs))
         # task.add_done_callback(lambda t: print("reconnect task done:", t.exception() or t.result()))
         _reconnect_tasks.add(task)
@@ -69,11 +72,14 @@ def make_reconnect_handler(ib, **kwargs):
         def done(t):
             _reconnect_tasks.discard(t)
             if t.cancelled():
-                print("reconnect task cancelled")
+                log.warning("reconnect task cancelled")
             elif t.exception():
-                print("reconnect fask failed:", repr(t.exception()))
+                log.error(f"reconnect task failed: {t.exception()!r}")
             else:
-                print("reconnect task done:", t.result())
+                log.info(f"reconnect task done: {t.result()}")
+
+
+
         task.add_done_callback(done)
     return handler
 
